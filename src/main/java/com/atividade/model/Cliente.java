@@ -1,20 +1,15 @@
 package com.atividade.model;
-
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.time.LocalDate;
 
 @Entity
-public class Cliente extends RepresentationModel<Cliente> implements Serializable {
+public class Cliente{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(name = "nome")
     private String nome;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -22,12 +17,12 @@ public class Cliente extends RepresentationModel<Cliente> implements Serializabl
 
     private String rg;
     private String cpf;
-    private int telefone;
+    private String telefone;
 
     public  Cliente(){
 
     }
-    public Cliente(String nome, LocalDate dataDeNascimento, String rg, String cpf, int telefone) {
+    public Cliente(String nome, LocalDate dataDeNascimento, String rg, String cpf, String telefone) {
         super();
         this.nome = nome;
         this.dataDeNascimento = dataDeNascimento;
@@ -60,11 +55,11 @@ public class Cliente extends RepresentationModel<Cliente> implements Serializabl
         this.dataDeNascimento = dataDeNascimento;
     }
 
-    public void setTelefone(int telefone) {
+    public void setTelefone(String telefone) {
         this.telefone = telefone;
     }
 
-    public int getTelefone() {
+    public String getTelefone() {
         return telefone;
     }
 
@@ -83,5 +78,6 @@ public class Cliente extends RepresentationModel<Cliente> implements Serializabl
     public void setCpf(String cpf) {
         this.cpf = cpf;
     }
+
 
 }
