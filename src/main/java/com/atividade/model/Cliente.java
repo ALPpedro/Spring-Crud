@@ -31,6 +31,9 @@ public class Cliente{
         this.telefone = telefone;
     }
 
+    public Cliente(Cliente cliente) {
+    }
+
     public Long getId() {
         return id;
     }

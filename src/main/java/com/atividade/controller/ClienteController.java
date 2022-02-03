@@ -5,18 +5,21 @@ import com.atividade.model.Cliente;
 import com.atividade.repository.ClienteCustomRepository;
 import com.atividade.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.beans.support.PagedListHolder;
+import org.springframework.data.domain.*;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/clientes")
-public class ClienteController {
+public class ClienteController{
 
     @Autowired
     private ClienteRepository clienteRepository;
@@ -27,10 +30,7 @@ public class ClienteController {
         this.clienteCustomRepository = clienteCustomRepository;
     }
 
-    @GetMapping
-    public List<Cliente> listar(){
-        return clienteRepository.findAll();
-    }
+
 
     @PostMapping
     public void incluir(@RequestBody Cliente cliente){
@@ -75,18 +75,53 @@ public class ClienteController {
         return  clienteRepository.buscarPorDataDeNascimento(data, pageable);
     }
 
-    @GetMapping("/tudao")
+   /* @GetMapping()
     public  Page<Cliente> buscarTudao(
-            Pageable pageable,
             @RequestParam(value = "id", required = false) Long id,
             @RequestParam(value = "nome", required = false) String nome,
             @RequestParam(value = "dataDeNascimento", required = false)@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataDeNasciemnto,
             @RequestParam(value = "rg", required = false) String rg,
             @RequestParam(value = "cpf", required = false) String cpf,
-            @RequestParam(value = "telefone", required = false) String telefone
+            @RequestParam(value = "telefone", required = false) String telefone,
+            Pageable pageable
             ){
-        return this.clienteCustomRepository.find(pageable, id, nome, dataDeNasciemnto, rg, cpf, telefone);
+        List<Cliente> clientes = clienteCustomRepository.find(pageable, id, nome, dataDeNasciemnto, rg, cpf, telefone);
+        Page<Cliente> resultList = new PageImpl<Cliente>(clientes, pageable, clientes.size());
+        return resultList;
     }
+            */
+
+
+   /** @GetMapping()
+    public  List buscarTudao(
+            @RequestParam(value = "id", required = false) Long id,
+            @RequestParam(value = "nome", required = false) String nome,
+            @RequestParam(value = "dataDeNascimento", required = false)@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataDeNasciemnto,
+            @RequestParam(value = "rg", required = false) String rg,
+            @RequestParam(value = "cpf", required = false) String cpf,
+            @RequestParam(value = "telefone", required = false) String telefone,
+            @RequestParam(value = "size", required = false) Long size,
+            @RequestParam(value = "page", required = false) Long page
+    ){
+        List teste3 =clienteCustomRepository.teste(page, size);
+
+        return teste3;
+    } */
+
+    @GetMapping()
+    public  Page buscarTudao(
+            @RequestParam(value = "id", required = false) Long id,
+            @RequestParam(value = "nome", required = false) String nome,
+            @RequestParam(value = "dataDeNascimento", required = false)@DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataDeNasciemnto,
+            @RequestParam(value = "rg", required = false) String rg,
+            @RequestParam(value = "cpf", required = false) String cpf,
+            @RequestParam(value = "telefone", required = false) String telefone,
+            Pageable pageable
+            ){
+
+        return clienteCustomRepository.find1(id, nome, dataDeNasciemnto, rg, cpf, telefone, pageable);
+    }
+
 
 
 }
