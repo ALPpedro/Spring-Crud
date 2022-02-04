@@ -21,8 +21,6 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long>{
     @Query(value = " select u from Cliente u where u.dataDeNascimento like ?1")
     List<Cliente> buscarPorDataDeNascimento(LocalDate dataDeNascimento, Pageable pageable);
 
-    List<Cliente> findByNomeContains(String nome);
-
     Page<Cliente> findAll(Pageable sort);
 
 

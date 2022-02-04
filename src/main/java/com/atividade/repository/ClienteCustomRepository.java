@@ -170,8 +170,8 @@ public class ClienteCustomRepository {
         }
 
         if (dataDeNascimento != null){
-            q.setParameter("dataDeNascimento", "%"+dataDeNascimento+"%");
-            countQuery.setParameter("dataDeNascimento", "%"+dataDeNascimento+"%");
+            q.setParameter("dataDeNascimento", dataDeNascimento);
+            countQuery.setParameter("dataDeNascimento", dataDeNascimento);
         }
 
         if (rg !=null){
