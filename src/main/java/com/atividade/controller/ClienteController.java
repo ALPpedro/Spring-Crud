@@ -1,22 +1,24 @@
 package com.atividade.controller;
 
+import com.atividade.dtos.ClienteDto;
 import com.atividade.exception.ResourceNotFoundException;
 import com.atividade.model.Cliente;
 import com.atividade.repository.ClienteCustomRepository;
 import com.atividade.repository.ClienteRepository;
+import com.atividade.service.ClienteService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.*;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
@@ -24,49 +26,37 @@ import java.util.stream.Collectors;
 public class ClienteController{
 
     @Autowired
-    private ClienteRepository clienteRepository;
-    private final ClienteCustomRepository clienteCustomRepository;
+    private final ClienteService clienteService;
 
-    public ClienteController(ClienteRepository clienteRepository, ClienteCustomRepository clienteCustomRepository) {
-        this.clienteRepository = clienteRepository;
-        this.clienteCustomRepository = clienteCustomRepository;
+    public ClienteController(ClienteService clienteService) {
+        this.clienteService = clienteService;
     }
 
 
-
     @PostMapping
-    public void incluir(@RequestBody Cliente cliente){
-        clienteRepository.save(cliente);
+    public ResponseEntity<Object> incluir(@RequestBody @Valid ClienteDto clientedto){
+        return clienteService.salvar(clientedto);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Map<String, String> handleValidation(MethodArgumentNotValidException ex){
+        return clienteService.handleValidationException(ex);
     }
 
     @PutMapping("/{id}")
     public Cliente atualizar(@PathVariable Long id, @RequestBody Cliente clNovo){
-        Cliente cliente = clienteRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Id não encontrado"));
-        if (clNovo.getNome()!=null){
-            cliente.setNome(clNovo.getNome());
-        }
-        if (clNovo.getDataDeNascimento()!= null) {
-            cliente.setDataDeNascimento(clNovo.getDataDeNascimento());
-        }
-        if (clNovo.getRg() != null) {
-            cliente.setRg(clNovo.getRg());
-        }
-        if (clNovo.getCpf() != null) {
-            cliente.setCpf(clNovo.getCpf());
-        }
-        if (clNovo.getTelefone() != null) {
-            cliente.setTelefone(clNovo.getTelefone());
-        }
-        return clienteRepository.save(cliente);
+        return clienteService.atualizar(id, clNovo);
     }
-    @GetMapping("/id/{id}")
-    public Optional<Cliente> buscarid(@PathVariable Long id){
-                  return clienteRepository.findById(id);
-    }
+
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id){
-        clienteRepository.deleteById(id);
+        clienteService.deleteById(id);
+    }
+
+    @GetMapping("/id/{id}")
+    public Optional<Cliente> buscarid(@PathVariable Long id){
+       return clienteService.findById(id);
     }
 
     @GetMapping()
@@ -80,7 +70,7 @@ public class ClienteController{
             Pageable pageable
             ){
 
-        return clienteCustomRepository.find1(id, nome, dataDeNasciemnto, rg, cpf, telefone, pageable);
+        return clienteService.find1(id, nome, dataDeNasciemnto, rg, cpf, telefone, pageable);
     }
 
 

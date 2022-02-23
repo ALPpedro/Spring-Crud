@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class ClienteCustomRepository {
+public class ClienteCustomRepository{
 
     private final EntityManager em;
 
