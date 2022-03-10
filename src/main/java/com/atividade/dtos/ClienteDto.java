@@ -1,25 +1,27 @@
 package com.atividade.dtos;
 
+import org.hibernate.validator.constraints.UniqueElements;
 import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 public class ClienteDto {
 
-    @NotBlank(message = "Campo nome está vázio ")
+    @NotBlank(message = "Campo nome está vazio ")
     private String nome;
 
-    @NotNull(message = "Campo data está vázio")
+    @NotNull(message = "Campo data está vazio")
     private LocalDate dataDeNascimento;
-    @NotBlank(message = "Campo rg está vázio")
+    @NotBlank(message = "Campo rg está vazio")
     private String rg;
     @CPF(message = "CPF invalido")
-    @NotBlank(message = "Campo CPF está vázio")
+    @NotBlank(message = "Campo CPF está vazio")
     private String cpf;
-    @NotBlank(message = "Campo telefone está vázio")
+    @NotBlank(message = "Campo telefone está vazio")
     private String telefone;
 
     public String getNome() {

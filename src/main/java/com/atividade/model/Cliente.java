@@ -1,4 +1,5 @@
 package com.atividade.model;
+import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -10,13 +11,18 @@ public class Cliente{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "nome")
     private String nome;
 
+    @Column(name = "dataDeNascimento")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dataDeNascimento;
 
+    @Column(name = "rg")
     private String rg;
+    @Column(name = "cpf")
     private String cpf;
+    @Column(name = "telefone")
     private String telefone;
 
     public  Cliente(){

@@ -2,23 +2,26 @@ package com.atividade.service;
 
 import com.atividade.dtos.ClienteDto;
 import com.atividade.exception.ResourceNotFoundException;
+import com.atividade.helper.ExcelHelper;
 import com.atividade.model.Cliente;
 import com.atividade.repository.ClienteCustomRepository;
 import com.atividade.repository.ClienteRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -34,6 +37,7 @@ public class ClienteService {
         this.clienteRepository = clienteRepository;
     }
 
+    @Transactional
     public ResponseEntity<Object> salvar(ClienteDto clientedto){
         var cliente = new Cliente();
         BeanUtils.copyProperties(clientedto, cliente);
@@ -54,9 +58,10 @@ public class ClienteService {
         return errors;
     }
 
-    public Cliente atualizar(Long id, Cliente clNovo){
+    String teste;
+    public ResponseEntity<?> atualizar(Long id, Cliente clNovo){
         Cliente cliente = clienteRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Id não encontrado"));
+                .orElseThrow(() -> new  ResourceNotFoundException("Id não encontrado"));
         if (clNovo.getNome()!=null){
             cliente.setNome(clNovo.getNome());
         }
@@ -72,7 +77,8 @@ public class ClienteService {
         if (clNovo.getTelefone() != null) {
             cliente.setTelefone(clNovo.getTelefone());
         }
-        return clienteRepository.save(cliente);
+        clienteRepository.save(cliente);
+        return new ResponseEntity<Cliente>(cliente, HttpStatus.OK);
     }
 
     public void deleteById(Long id) {
@@ -87,4 +93,25 @@ public class ClienteService {
     public Page find1(Long id, String nome, LocalDate dataDeNasciemnto, String rg, String cpf, String telefone, Pageable pageable) {
         return clienteCustomRepository.find1(id, nome, dataDeNasciemnto, rg, cpf, telefone, pageable);
     }
+
+
+    public List save(MultipartFile file) {
+        try {
+            List<Cliente> clientes = ExcelHelper.excelToTutorials(file.getInputStream());
+
+            return clientes;
+
+        } catch (IOException e) {
+            throw new ResourceNotFoundException("Falha ao armazenar dados do Excel: " + e.getMessage());
+        }
+    }
+    public List<Cliente> getAllTutorials() {
+        return clienteRepository.findAll();
+    }
+
+
+
+
+
+
 }
